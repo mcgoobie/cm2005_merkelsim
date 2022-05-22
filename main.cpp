@@ -8,6 +8,7 @@
 
 int main()
 {
+    // Create new instance of MerkelMain and launches it.
     MerkelMain app{};
     app.init();
 }
