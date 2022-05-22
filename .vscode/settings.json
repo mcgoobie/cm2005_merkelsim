@@ -1,6 +1,5 @@
 {
     "git.ignoreLimitWarning": true,
-    "C_Cpp.errorSquiggles": "Disabled",
     "files.associations": {
         "__bit_reference": "cpp",
         "__bits": "cpp",
@@ -66,6 +65,14 @@
         "algorithm": "cpp",
         "functional": "cpp",
         "iterator": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "deque": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "stack": "cpp",
+        "__tree": "cpp",
+        "map": "cpp",
+        "filesystem": "cpp",
+        "__functional_base_03": "cpp"
     }
 }
