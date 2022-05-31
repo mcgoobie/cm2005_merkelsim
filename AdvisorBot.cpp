@@ -1,6 +1,7 @@
 #include "AdvisorBot.h"
 #include "OrderBookEntry.h"
 #include "CSVReader.h"
+#include "HelpCmds.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -21,6 +22,7 @@ AdvisorBot::AdvisorBot()
 void AdvisorBot::init()
 {
   string userInput;
+  knownCommands = {"help", "prod", "min", "max", "avg", "predict", "time", "step", "exit"};
   // currentTime = orderBook.getEarliestTime();
 
   // Insert 10 BTC into user wallet.
@@ -100,8 +102,6 @@ bool AdvisorBot::checkHelpArguements(string &userInput, std::vector<std::string>
       // store help and following arguement keyword in params vector.
       helpParams.push_back(tokens[0]);
       helpParams.push_back(tokens[1]);
-
-      cout << "Help params are : " << tokens[0] << " " << tokens[1] << endl;
     }
     else
     {
@@ -117,8 +117,6 @@ bool AdvisorBot::checkHelpArguements(string &userInput, std::vector<std::string>
 
 void AdvisorBot::processUserInput(string userInput)
 {
-  std::vector<std::string> knownCommands{"help", "prod", "min", "max", "avg", "predict", "time", "step", "exit"};
-
   // Validates user input as a exsisting cmd w/ 1 arguement.
   if (validateUserInput(userInput, knownCommands))
   {
@@ -161,20 +159,61 @@ void AdvisorBot::processUserInput(string userInput)
       std::exit(0);
     }
   }
-  // Checks if help command has additional arguements
-  else if (checkHelpArguements(userInput, knownCommands))
-  {
-    // cout << "checkHelpArguements::" << helpParams[0] << helpParams[1] << endl;
-  }
   // Checks if userInput is left empty
-  else if (userInput.empty())
+  else if (userInput.empty() || userInput.find_first_not_of(' ') == std::string::npos)
   {
     return;
     cout << "advisorbot> Please enter a command, or help for a list of commands. " << endl;
   }
+  // Checks if help command has additional arguements
+  else if (checkHelpArguements(userInput, knownCommands))
+  {
+    fetchHelpCmdParams(helpParams);
+  }
+
   else
   {
     cout << "advisorbot> '" << userInput << "' is not a command. For information on available commands, type 'help'. " << endl;
+  }
+}
+
+void AdvisorBot::fetchHelpCmdParams(std::vector<string> &helpParams)
+{
+  if (helpParams[1].compare(knownCommands[0]) == 0)
+  {
+    helpCmds.getHelpCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[1]) == 0)
+  {
+    helpCmds.getProdCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[2]) == 0)
+  {
+    helpCmds.getMinCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[3]) == 0)
+  {
+    helpCmds.getMaxCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[4]) == 0)
+  {
+    helpCmds.getAvgCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[5]) == 0)
+  {
+    helpCmds.getPredictCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[6]) == 0)
+  {
+    helpCmds.getTimeCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[7]) == 0)
+  {
+    helpCmds.getStepCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[8]) == 0)
+  {
+    helpCmds.getExitCmdSyntax();
   }
 }
 
