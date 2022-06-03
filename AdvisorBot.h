@@ -20,9 +20,12 @@ private:
   bool validateUserInput(std::string &userInput, std::vector<std::string> &arrayOfCmds);
   bool checkHelpArguements(std::string &userInput, std::vector<std::string> &arrayOfCmds);
   void fetchHelpCmdParams(std::vector<std::string> &helpParams);
-  void printHelp();
+  void nextTimeStep();
 
   std::vector<std::string> helpParams;
   std::vector<std::string> knownCommands;
   HelpCmds helpCmds;
+  std::string currentTime;
+  OrderBook orderBook{"20200601.csv"};
+  Wallet wallet;
 };

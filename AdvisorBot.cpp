@@ -23,7 +23,7 @@ void AdvisorBot::init()
 {
   string userInput;
   knownCommands = {"help", "prod", "min", "max", "avg", "predict", "time", "step", "exit"};
-  // currentTime = orderBook.getEarliestTime();
+  currentTime = orderBook.getEarliestTime();
 
   // Insert 10 BTC into user wallet.
   // wallet.insertCurrency("BTC", 10);
@@ -115,6 +115,27 @@ bool AdvisorBot::checkHelpArguements(string &userInput, std::vector<std::string>
   return true;
 }
 
+void AdvisorBot::nextTimeStep()
+{
+  std::cout << "Going to next timeframe" << std::endl;
+  for (std::string p : orderBook.getKnownProducts())
+  {
+    std::cout << "matching " << p << std::endl;
+    std::vector<OrderBookEntry> sales = orderBook.matchAskToBids(p, currentTime);
+    std::cout << "Sales: " << sales.size() << std::endl;
+    // for (OrderBookEntry &sale : sales)
+    // {
+    //   std::cout << "Sale Price : " << sale.price << " amount " << sale.amount << std::endl;
+    //   if (sale.username == "simuser")
+    //   {
+    //     // update the wallet
+    //     wallet.processSale(sale);
+    //   }
+    // }
+  }
+  currentTime = orderBook.getNextTime(currentTime);
+}
+
 void AdvisorBot::processUserInput(string userInput)
 {
   // Validates user input as a exsisting cmd w/ 1 arguement.
@@ -146,11 +167,11 @@ void AdvisorBot::processUserInput(string userInput)
     }
     if (userInput.compare(knownCommands[6]) == 0)
     {
-      cout << "time" << endl;
+      std::cout << "advisorbot> Current time in dataset is : " << currentTime << std::endl;
     }
     if (userInput.compare(knownCommands[7]) == 0)
     {
-      cout << "step" << endl;
+      nextTimeStep();
     }
     if (userInput.compare(knownCommands[8]) == 0)
     {
@@ -215,8 +236,4 @@ void AdvisorBot::fetchHelpCmdParams(std::vector<string> &helpParams)
   {
     helpCmds.getExitCmdSyntax();
   }
-}
-
-void AdvisorBot::printHelp()
-{
 }
