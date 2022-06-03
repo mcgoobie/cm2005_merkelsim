@@ -170,6 +170,7 @@ void MerkelMain::nextTimeframe()
             }
         }
     }
+        currentTime = orderBook.getNextTime(currentTime);
 }
 
 int MerkelMain::getUserOption()

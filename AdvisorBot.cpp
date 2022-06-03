@@ -1,6 +1,7 @@
 #include "AdvisorBot.h"
 #include "OrderBookEntry.h"
 #include "CSVReader.h"
+#include "HelpCmds.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -21,7 +22,8 @@ AdvisorBot::AdvisorBot()
 void AdvisorBot::init()
 {
   string userInput;
-  // currentTime = orderBook.getEarliestTime();
+  knownCommands = {"help", "prod", "min", "max", "avg", "predict", "time", "step", "exit"};
+  currentTime = orderBook.getEarliestTime();
 
   // Insert 10 BTC into user wallet.
   // wallet.insertCurrency("BTC", 10);
@@ -100,8 +102,6 @@ bool AdvisorBot::checkHelpArguements(string &userInput, std::vector<std::string>
       // store help and following arguement keyword in params vector.
       helpParams.push_back(tokens[0]);
       helpParams.push_back(tokens[1]);
-
-      cout << "Help params are : " << tokens[0] << " " << tokens[1] << endl;
     }
     else
     {
@@ -115,10 +115,29 @@ bool AdvisorBot::checkHelpArguements(string &userInput, std::vector<std::string>
   return true;
 }
 
+void AdvisorBot::nextTimeStep()
+{
+  std::cout << "Going to next timeframe" << std::endl;
+  for (std::string p : orderBook.getKnownProducts())
+  {
+    std::cout << "matching " << p << std::endl;
+    std::vector<OrderBookEntry> sales = orderBook.matchAskToBids(p, currentTime);
+    std::cout << "Sales: " << sales.size() << std::endl;
+    // for (OrderBookEntry &sale : sales)
+    // {
+    //   std::cout << "Sale Price : " << sale.price << " amount " << sale.amount << std::endl;
+    //   if (sale.username == "simuser")
+    //   {
+    //     // update the wallet
+    //     wallet.processSale(sale);
+    //   }
+    // }
+  }
+  currentTime = orderBook.getNextTime(currentTime);
+}
+
 void AdvisorBot::processUserInput(string userInput)
 {
-  std::vector<std::string> knownCommands{"help", "prod", "min", "max", "avg", "predict", "time", "step", "exit"};
-
   // Validates user input as a exsisting cmd w/ 1 arguement.
   if (validateUserInput(userInput, knownCommands))
   {
@@ -148,11 +167,11 @@ void AdvisorBot::processUserInput(string userInput)
     }
     if (userInput.compare(knownCommands[6]) == 0)
     {
-      cout << "time" << endl;
+      std::cout << "advisorbot> Current time in dataset is : " << currentTime << std::endl;
     }
     if (userInput.compare(knownCommands[7]) == 0)
     {
-      cout << "step" << endl;
+      nextTimeStep();
     }
     if (userInput.compare(knownCommands[8]) == 0)
     {
@@ -161,23 +180,60 @@ void AdvisorBot::processUserInput(string userInput)
       std::exit(0);
     }
   }
-  // Checks if help command has additional arguements
-  else if (checkHelpArguements(userInput, knownCommands))
-  {
-    // cout << "checkHelpArguements::" << helpParams[0] << helpParams[1] << endl;
-  }
   // Checks if userInput is left empty
-  else if (userInput.empty())
+  else if (userInput.empty() || userInput.find_first_not_of(' ') == std::string::npos)
   {
     return;
     cout << "advisorbot> Please enter a command, or help for a list of commands. " << endl;
   }
+  // Checks if help command has additional arguements
+  else if (checkHelpArguements(userInput, knownCommands))
+  {
+    fetchHelpCmdParams(helpParams);
+  }
+
   else
   {
     cout << "advisorbot> '" << userInput << "' is not a command. For information on available commands, type 'help'. " << endl;
   }
 }
 
-void AdvisorBot::printHelp()
+void AdvisorBot::fetchHelpCmdParams(std::vector<string> &helpParams)
 {
+  if (helpParams[1].compare(knownCommands[0]) == 0)
+  {
+    helpCmds.getHelpCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[1]) == 0)
+  {
+    helpCmds.getProdCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[2]) == 0)
+  {
+    helpCmds.getMinCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[3]) == 0)
+  {
+    helpCmds.getMaxCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[4]) == 0)
+  {
+    helpCmds.getAvgCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[5]) == 0)
+  {
+    helpCmds.getPredictCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[6]) == 0)
+  {
+    helpCmds.getTimeCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[7]) == 0)
+  {
+    helpCmds.getStepCmdSyntax();
+  }
+  if (helpParams[1].compare(knownCommands[8]) == 0)
+  {
+    helpCmds.getExitCmdSyntax();
+  }
 }

@@ -25,7 +25,7 @@ private: /** Private functions only accessible through MerkelMain */
 
     std::string currentTime;
 
-    OrderBook orderBook{"20200317.csv"};
+    OrderBook orderBook{"20200601.csv"};
 
     Wallet wallet;
 };
