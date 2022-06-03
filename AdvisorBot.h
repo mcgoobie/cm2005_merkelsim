@@ -20,6 +20,7 @@ private:
   bool validateUserInput(std::string &userInput, std::vector<std::string> &arrayOfCmds);
   bool checkHelpArguements(std::string &userInput, std::vector<std::string> &arrayOfCmds);
   void fetchHelpCmdParams(std::vector<std::string> &helpParams);
+  void fetchAvailableCurrency();
   void nextTimeStep();
 
   std::vector<std::string> helpParams;
