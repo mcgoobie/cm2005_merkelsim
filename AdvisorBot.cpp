@@ -127,9 +127,11 @@ void AdvisorBot::processUserInput(std::vector<string> inputCommand)
     {
       findMaxPrice(inputCommand);
     }
-    if (inputCommand[0].compare(knownCommands[4]) == 0)
+    // if condition for 'avg' : first token is 'avg' and only 4 tokens in command : 1:avg 2:ETH/BTC 3:OrderBookType 4:NoOfTimesteps
+    if (inputCommand[0].compare(knownCommands[4]) == 0 && inputCommand.size() == 4)
     {
       cout << "avg" << endl;
+      findAvgPrice(inputCommand);
     }
     if (inputCommand[0].compare(knownCommands[5]) == 0)
     {
@@ -271,9 +273,9 @@ void AdvisorBot::findMinPrice(std::vector<string> &inputCommand)
     if (type == "bid")
       entries = orderBook.getOrders(OrderBookType::bid, currency, currentTime);
 
-    cout << "advisorbot> The min " << currency << " for ETH/BTC is " << OrderBook::getLowPrice(entries) << endl;
+    cout << "advisorbot> The min " << type << " for " << currency << " is " << OrderBook::getLowPrice(entries) << endl;
   }
-    else
+  else
   {
     cout << "advisorbot> Failed to fetch Min price for " << currency << ", make sure command syntax is correct. For more help, enter 'help min' ." << endl;
     return;
@@ -294,12 +296,35 @@ void AdvisorBot::findMaxPrice(std::vector<string> &inputCommand)
     if (type == "bid")
       entries = orderBook.getOrders(OrderBookType::bid, currency, currentTime);
 
-    cout << "advisorbot> The max " << currency << " for ETH/BTC is " << OrderBook::getHighPrice(entries) << endl;
+    cout << "advisorbot> The min " << type << " for " << currency << " is " << OrderBook::getHighPrice(entries) << endl;
   }
   else
   {
-        cout << "advisorbot> Failed to fetch Max price for " << currency << ", make sure command syntax is correct. For more help, enter 'help max' ." << endl;
+    cout << "advisorbot> Failed to fetch Max price for " << currency << ", make sure command syntax is correct. For more help, enter 'help max' ." << endl;
     return;
+  }
+}
+
+void AdvisorBot::findAvgPrice(std::vector<std::string> &inputCommand)
+{
+  string currency = inputCommand[1];
+  string type = inputCommand[2];
+  // convert timestep from string to int.
+  int noOfTimestep = std::stoi(inputCommand[3]);
+  int no = 10;
+  std::vector<OrderBookEntry> entries;
+  if (validateUserInput(currency, productTypes) && ((type == "bid") || (type == "ask")))
+  {
+    if (type == "ask")
+      entries = orderBook.getOrders(OrderBookType::ask, currency, currentTime);
+    if (type == "bid")
+      entries = orderBook.getOrders(OrderBookType::bid, currency, currentTime);
+
+    OrderBook::getAvgPrice(entries, currentTime, noOfTimestep);
+  }
+  else
+  {
+    cout << "Something failed. " << endl;
   }
 }
 

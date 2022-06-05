@@ -24,6 +24,7 @@ private:
   void listAvailableCurrency();
   void findMinPrice(std::vector<std::string> &inputCommand);
   void findMaxPrice(std::vector<std::string> &inputCommand);
+  void findAvgPrice(std::vector<std::string> &inputCommand);
   void nextTimeStep();
   void notACommandError(std::vector<std::string> &inputCommand);
 
@@ -32,6 +33,6 @@ private:
   HelpCmds helpCmds;
   std::string currentTime;
   std::vector<std::string> productTypes;
-  OrderBook orderBook{"20200601.csv"};
+  OrderBook orderBook{"test.csv"};
   Wallet wallet;
 };

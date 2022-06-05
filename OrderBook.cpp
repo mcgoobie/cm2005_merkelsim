@@ -56,6 +56,38 @@ double OrderBook::getHighPrice(std::vector<OrderBookEntry> &orders)
   return max;
 };
 
+double OrderBook::getAvgPrice(std::vector<OrderBookEntry> &orders, std::string currentTime, int &noOfTimesteps)
+{
+  std::vector<std::string> rangeOfTimesteps;
+  rangeOfTimesteps.push_back(currentTime);
+  double time = 10.5;
+  std::cout << "getAvgPrice::" << rangeOfTimesteps[0] << std::endl;
+
+  for (int i = 0; i != orders.size(); ++i)
+  {
+    std::string lastInList = rangeOfTimesteps.back();
+    std::string currentIterator = orders[i].timestamp;
+    std::cout << "list column no " << i << " : Timestep, " << orders[i].timestamp << " is the same as prev timestep, " << lastInList << std::endl;
+    // if (lastInList != currentIterator)
+    // {
+    //   std::cout << "adding unique timestep " << orders[i].timestamp << std::endl;
+    //   rangeOfTimesteps.push_back(orders[i].timestamp);
+    // }
+    // else
+    // {
+    //   std::cout << "list column no " << i << " : Timestep, " << orders[i].timestamp << " is the same as prev timestep, " << lastInList << std::endl;
+    // }
+  }
+
+  // for (int i = 0; i != rangeOfTimesteps.size(); ++i)
+  // {
+  //   std::cout << "Timesteps retreived: " << std::endl;
+  //   std::cout << rangeOfTimesteps[i] << std::endl;
+  // }
+
+  return time;
+};
+
 double OrderBook::getLowPrice(std::vector<OrderBookEntry> &orders)
 {
   double min = orders[0].price;

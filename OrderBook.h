@@ -22,12 +22,16 @@ public:
   /** Returns the next sent time in orderbook, if no next timestamp reset to earliest timestamp */
   std::string getNextTime(std::string timestamp);
 
+  //** Convert time to long long for comparison */
+  static long long convertTimeForComparison(std::string currentTime);
+
   void insertOrder(OrderBookEntry &order);
 
   std::vector<OrderBookEntry> matchAskToBids(std::string product, std::string timestamp);
 
   static double getHighPrice(std::vector<OrderBookEntry> &orders);
   static double getLowPrice(std::vector<OrderBookEntry> &orders);
+  static double getAvgPrice(std::vector<OrderBookEntry> &orders, std::string currentTime, int &noOfTimestep);
 
 private:
   std::vector<OrderBookEntry> orders;
