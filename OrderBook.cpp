@@ -56,6 +56,20 @@ double OrderBook::getHighPrice(std::vector<OrderBookEntry> &orders)
   return max;
 };
 
+double OrderBook::getAvgPrice(std::vector<OrderBookEntry> &orders, std::string currentTime)
+{
+  double totalPrice;
+  double avgPrice;
+
+  for (OrderBookEntry &e : orders)
+  {
+    totalPrice += e.price;
+  }
+
+  avgPrice = totalPrice / orders.size();
+  return avgPrice;
+};
+
 double OrderBook::getLowPrice(std::vector<OrderBookEntry> &orders)
 {
   double min = orders[0].price;
