@@ -25,6 +25,7 @@ private:
   void findMinPrice(std::vector<std::string> &inputCommand);
   void findMaxPrice(std::vector<std::string> &inputCommand);
   void findAvgPrice(std::vector<std::string> &inputCommand, std::vector<std::string> &pastTimeFrames);
+  void predictWeightedMovingAvg(std::vector<std::string> &inputCommand, std::vector<std::string> &pastTimeFrames);
   void nextTimeStep();
   void notACommandError(std::vector<std::string> &inputCommand);
 

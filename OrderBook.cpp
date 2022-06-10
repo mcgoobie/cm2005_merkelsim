@@ -81,6 +81,25 @@ double OrderBook::getLowPrice(std::vector<OrderBookEntry> &orders)
   return min;
 };
 
+double OrderBook::getWeightedMovingAvg(std::vector<double> &minMax)
+{
+  // Get the sum of the weightage of X prices in the list.
+  int weightage = (minMax.size() * (minMax.size() + 1)) / 2;
+  std::cout << "getWeightedMovingAvg::weightage " << weightage << std::endl;
+  double weightedMovingAvg;
+  float weightedPrice;
+
+  for (int i = 0; i != minMax.size(); ++i)
+  {
+    weightedPrice = minMax[i] * ((i + 1) / weightage);
+    weightedMovingAvg += weightedPrice;
+    std::cout << "getWeightedMovingAvg::product " << ((i + 1) / weightage) << std::endl;
+  }
+
+  // std::cout << "getWeightedMovingAvg::WMA : " << weightedMovingAvg << std::endl;
+  return weightedMovingAvg;
+};
+
 std::string OrderBook::getEarliestTime()
 {
   return orders[0].timestamp;

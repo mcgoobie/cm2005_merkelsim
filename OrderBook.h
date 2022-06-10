@@ -29,6 +29,7 @@ public:
   static double getHighPrice(std::vector<OrderBookEntry> &orders);
   static double getLowPrice(std::vector<OrderBookEntry> &orders);
   static double getAvgPrice(std::vector<OrderBookEntry> &orders, std::string currentTime);
+  static double getWeightedMovingAvg(std::vector<double> &minMax);
 
 private:
   std::vector<OrderBookEntry> orders;

@@ -61,6 +61,10 @@ std::vector<string> tokenise(string userInput, string delimiter)
   } while (end > 0);
   cout << endl;
 
+<<<<<<< HEAD
+=======
+  cout << "Total tokens : " << tokens.size() << endl;
+>>>>>>> 7a1a519b50ecc3119c17df053150a71c0c7c6ebf
   return tokens;
 }
 
@@ -131,12 +135,20 @@ void AdvisorBot::processUserInput(std::vector<string> inputCommand)
     // User can only get avg of past timeframes that are available from the current timeframe in the dataset
     if (inputCommand[0].compare(knownCommands[4]) == 0 && inputCommand.size() == 4)
     {
+<<<<<<< HEAD
       cout << "avg" << endl;
       findAvgPrice(inputCommand, pastTimeFrames);
     }
     if (inputCommand[0].compare(knownCommands[5]) == 0)
     {
       cout << "predict" << endl;
+=======
+      findAvgPrice(inputCommand, pastTimeFrames);
+    }
+    if (inputCommand[0].compare(knownCommands[5]) == 0 && inputCommand.size() == 4)
+    {
+      predictWeightedMovingAvg(inputCommand, pastTimeFrames);
+>>>>>>> 7a1a519b50ecc3119c17df053150a71c0c7c6ebf
     }
     if (inputCommand[0].compare(knownCommands[6]) == 0)
     {
@@ -330,28 +342,84 @@ void AdvisorBot::findAvgPrice(std::vector<string> &inputCommand, std::vector<str
     if (type == "ask")
     {
       for (int i = 0; i != noOfTimestep; ++i)
+<<<<<<< HEAD
       {
         entries = orderBook.getOrders(OrderBookType::ask, currency, recentTimeSteps[i]);
       }
+=======
+        entries = orderBook.getOrders(OrderBookType::ask, currency, recentTimeSteps[i]);
+>>>>>>> 7a1a519b50ecc3119c17df053150a71c0c7c6ebf
     }
     if (type == "bid")
     {
       for (int i = 0; i != noOfTimestep; ++i)
-      {
         entries = orderBook.getOrders(OrderBookType::bid, currency, recentTimeSteps[i]);
-      }
     }
     cout << " The average " << currency << " " << type << " price over the last " << noOfTimestep << " timesteps was " << OrderBook::getAvgPrice(entries, currentTime) << endl;
   }
 }
 
+void AdvisorBot::predictWeightedMovingAvg(std::vector<string> &inputCommand, std::vector<string> &pastTimeFrames)
+{
+  string minMax = inputCommand[1];
+  string currency = inputCommand[2];
+  string type = inputCommand[3];
+
+  std::vector<OrderBookEntry> entries;
+  std::vector<double> minMaxPrices;
+  cout << "a" << endl;
+  if (validateUserInput(currency, productTypes) && ((type == "bid") || (type == "ask")))
+  {
+    cout << "a" << endl;
+    if (type == "ask")
+    {
+      cout << "b" << endl;
+      for (int i = 0; i != pastTimeFrames.size(); ++i)
+      {
+        entries = orderBook.getOrders(OrderBookType::ask, currency, pastTimeFrames[i]);
+
+        if (minMax == "min")
+        {
+          cout << "c" << endl;
+          minMaxPrices.push_back(OrderBook::getLowPrice(entries));
+        }
+        else if (minMax == "max")
+          minMaxPrices.push_back(OrderBook::getHighPrice(entries));
+      }
+    }
+    if (type == "bid")
+    {
+      for (int i = 0; i != pastTimeFrames.size(); ++i)
+      {
+        entries = orderBook.getOrders(OrderBookType::bid, currency, pastTimeFrames[i]);
+
+        if (minMax == "min")
+          minMaxPrices.push_back(OrderBook::getLowPrice(entries));
+        else if (minMax == "max")
+          minMaxPrices.push_back(OrderBook::getHighPrice(entries));
+      }
+    }
+  }
+  for (int i = 0; i != minMaxPrices.size(); ++i)
+    cout << "PredictWeightedMovingAvg::" << minMax << " price of order at " << pastTimeFrames[i] << " is : " << minMaxPrices[i] << endl;
+
+  OrderBook::getWeightedMovingAvg(minMaxPrices);
+  // cout << " The average " << currency << " " << type << " price over the last " << pastTimeFrames.size()
+  //      << " timesteps was" << OrderBook::getWeightedMovingAvg(minMaxPrices) << endl;
+}
+
 void AdvisorBot::nextTimeStep()
 {
-  std::cout << "Going to next timestep" << std::endl;
+  cout << "Going to next timestep" << std::endl;
   pastTimeFrames.push_back(currentTime);
 
   // Save past timesteps for use when using the avg command later.
   std::cout << "Size of available timesteps to pull from: " << pastTimeFrames.size() << std::endl;
+<<<<<<< HEAD
+=======
+  for (string e : pastTimeFrames)
+    cout << e << endl;
+>>>>>>> 7a1a519b50ecc3119c17df053150a71c0c7c6ebf
 
   currentTime = orderBook.getNextTime(currentTime);
 }
