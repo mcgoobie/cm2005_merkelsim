@@ -63,9 +63,10 @@ double OrderBook::getAvgPrice(std::vector<OrderBookEntry> &orders, std::string c
 
   for (OrderBookEntry &e : orders)
   {
+    // Find total price of all products in the listed timesteps
     totalPrice += e.price;
   }
-
+  // Divide price by the total amount of orders to get the avg
   avgPrice = totalPrice / orders.size();
   return avgPrice;
 };
@@ -85,18 +86,15 @@ double OrderBook::getWeightedMovingAvg(std::vector<double> &minMax)
 {
   // Get the sum of the weightage of X prices in the list.
   int weightage = (minMax.size() * (minMax.size() + 1)) / 2;
-  std::cout << "getWeightedMovingAvg::weightage " << weightage << std::endl;
   double weightedMovingAvg;
   float weightedPrice;
 
   for (int i = 0; i != minMax.size(); ++i)
   {
-    weightedPrice = minMax[i] * ((i + 1) / weightage);
+    weightedPrice = minMax[i] * ((i + 1.0) / weightage);
     weightedMovingAvg += weightedPrice;
-    std::cout << "getWeightedMovingAvg::product " << ((i + 1) / weightage) << std::endl;
   }
 
-  // std::cout << "getWeightedMovingAvg::WMA : " << weightedMovingAvg << std::endl;
   return weightedMovingAvg;
 };
 
