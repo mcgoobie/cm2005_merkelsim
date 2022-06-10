@@ -2,6 +2,7 @@
 #include "CSVReader.h"
 #include <map>
 #include <iostream>
+#include <algorithm>
 
 /** construct, reading a csv file */
 OrderBook::OrderBook(std::string filename)
@@ -55,6 +56,20 @@ double OrderBook::getHighPrice(std::vector<OrderBookEntry> &orders)
   return max;
 };
 
+double OrderBook::getAvgPrice(std::vector<OrderBookEntry> &orders, std::string currentTime)
+{
+  double totalPrice;
+  double avgPrice;
+
+  for (OrderBookEntry &e : orders)
+  {
+    totalPrice += e.price;
+  }
+
+  avgPrice = totalPrice / orders.size();
+  return avgPrice;
+};
+
 double OrderBook::getLowPrice(std::vector<OrderBookEntry> &orders)
 {
   double min = orders[0].price;
@@ -64,6 +79,25 @@ double OrderBook::getLowPrice(std::vector<OrderBookEntry> &orders)
       min = e.price;
   }
   return min;
+};
+
+double OrderBook::getWeightedMovingAvg(std::vector<double> &minMax)
+{
+  // Get the sum of the weightage of X prices in the list.
+  int weightage = (minMax.size() * (minMax.size() + 1)) / 2;
+  std::cout << "getWeightedMovingAvg::weightage " << weightage << std::endl;
+  double weightedMovingAvg;
+  float weightedPrice;
+
+  for (int i = 0; i != minMax.size(); ++i)
+  {
+    weightedPrice = minMax[i] * ((i + 1) / weightage);
+    weightedMovingAvg += weightedPrice;
+    std::cout << "getWeightedMovingAvg::product " << ((i + 1) / weightage) << std::endl;
+  }
+
+  // std::cout << "getWeightedMovingAvg::WMA : " << weightedMovingAvg << std::endl;
+  return weightedMovingAvg;
 };
 
 std::string OrderBook::getEarliestTime()
