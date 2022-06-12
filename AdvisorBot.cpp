@@ -2,6 +2,7 @@
 #include "OrderBookEntry.h"
 #include "CSVReader.h"
 #include "HelpCmds.h"
+#include "CurrentTrend.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -23,7 +24,7 @@ void AdvisorBot::init()
 {
   string userInput;
   std::vector<string> inputCommand;
-  knownCommands = {"help", "prod", "min", "max", "avg", "predict", "time", "step"};
+  knownCommands = {"help", "prod", "min", "max", "avg", "predict", "time", "step", "current"};
   currentTime = orderBook.getEarliestTime();
   saveAvailableCurrency();
   cout << "advisorbot> Please enter a command, or help for a list of commands. " << endl;
@@ -152,6 +153,12 @@ void AdvisorBot::processUserInput(std::vector<string> inputCommand)
     {
       cout << "-Step-" << endl;
       nextTimeStep();
+    }
+    if (inputCommand[0].compare(knownCommands[8]) == 0)
+    {
+      cout << "-Current-" << endl;
+      // List top 3 most traded currencies and the highest price of each
+      getCurrentTrends(inputCommand);
     }
   }
   // Checks if userInput is left empty
@@ -378,9 +385,71 @@ void AdvisorBot::predictWeightedMovingAvg(std::vector<string> &inputCommand, std
       }
     }
   }
-
   cout << "advisorbot> The average " << currency << " " << type << " price over the last " << pastTimeFrames.size()
        << " timesteps was " << OrderBook::getWeightedMovingAvg(minMaxPrices) << endl;
+}
+
+void AdvisorBot::getCurrentTrends(std::vector<std::string> &inputCommand)
+{
+  string minMax = inputCommand[1];
+  string type = inputCommand[2];
+  std::vector<OrderBookEntry> entries1, entriesTemp;
+  std::vector<std::vector<OrderBookEntry> > comparisonList;
+
+  if (((minMax == "min") || (minMax == "max")) && ((type == "bid") || (type == "ask")))
+  {
+    if (type == "ask")
+    {
+      entries1 = orderBook.getOrders(OrderBookType::ask, productTypes[0], currentTime);
+      cout << "getCurrentTrends::entry1.size() = " << entries1.size() << " and product is " << productTypes[0] << endl;
+      comparisonList.push_back(entries1);
+      for (int i = 0; i != productTypes.size() - 1; ++i)
+      {
+        entriesTemp = orderBook.getOrders(OrderBookType::ask, productTypes[i + 1], currentTime);
+        comparisonList.push_back(entriesTemp);
+        cout << "getCurrentTrends::entryTemp.size() = " << entriesTemp.size() << " and product is " << productTypes[i + 1] << endl;
+
+        if (comparisonList[0].size() > comparisonList[1].size())
+          comparisonList.erase(comparisonList.begin() + 1);
+        if (comparisonList[0].size() < comparisonList[1].size())
+          comparisonList.erase(comparisonList.begin());
+      }
+
+      cout << "Product with most amount of sales at this timestep is : " << comparisonList[0][0].product << endl;
+    }
+    // if (type == "bid")
+    // {
+    //   entries1 = orderBook.getOrders(OrderBookType::ask, productTypes[1], currentTime);
+    //   entriesTemp = orderBook.getOrders(OrderBookType::ask, productTypes[2], currentTime);
+    // }
+  }
+
+  // string minMax = inputCommand[1];
+  // string type = inputCommand[2];
+  // std::vector<OrderBookEntry> entries1, entries2, entries3, entries4, entries5, allEntries, popularProduct;
+
+  // if (((minMax == "min") || (minMax == "max")) && ((type == "bid") || (type == "ask")))
+  // {
+  //   if (type == "ask")
+  //   {
+  //     entries1 = orderBook.getOrders(OrderBookType::ask, productTypes[1], currentTime);
+  //     entries2 = orderBook.getOrders(OrderBookType::ask, productTypes[2], currentTime);
+  //     entries3 = orderBook.getOrders(OrderBookType::ask, productTypes[3], currentTime);
+  //     entries4 = orderBook.getOrders(OrderBookType::ask, productTypes[4], currentTime);
+  //     entries5 = orderBook.getOrders(OrderBookType::ask, productTypes[5], currentTime);
+  //   }
+  //   if (type == "bid")
+  //   {
+  //     entries1 = orderBook.getOrders(OrderBookType::bid, productTypes[1], currentTime);
+  //     entries2 = orderBook.getOrders(OrderBookType::bid, productTypes[2], currentTime);
+  //     entries3 = orderBook.getOrders(OrderBookType::bid, productTypes[3], currentTime);
+  //     entries4 = orderBook.getOrders(OrderBookType::bid, productTypes[4], currentTime);
+  //     entries5 = orderBook.getOrders(OrderBookType::bid, productTypes[5], currentTime);
+  //   }
+  // }
+
+  // if (entries1.size() < entries2.size())
+  //   popularProduct
 }
 
 void AdvisorBot::nextTimeStep()
