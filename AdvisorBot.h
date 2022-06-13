@@ -36,6 +36,6 @@ private:
   std::string currentTime;
   std::vector<std::string> productTypes;
   std::vector<std::string> pastTimeFrames;
-  OrderBook orderBook{"20200601.csv"};
+  OrderBook orderBook{"test.csv"};
   Wallet wallet;
 };
