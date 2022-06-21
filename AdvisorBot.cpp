@@ -2,6 +2,7 @@
 #include "OrderBookEntry.h"
 #include "CSVReader.h"
 #include "HelpCmds.h"
+#include "CurrentTrend.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -23,7 +24,7 @@ void AdvisorBot::init()
 {
   string userInput;
   std::vector<string> inputCommand;
-  knownCommands = {"help", "prod", "min", "max", "avg", "predict", "time", "step", "exit"};
+  knownCommands = {"help", "prod", "min", "max", "avg", "predict", "time", "step", "current"};
   currentTime = orderBook.getEarliestTime();
   saveAvailableCurrency();
   cout << "advisorbot> Please enter a command, or help for a list of commands. " << endl;
@@ -61,10 +62,6 @@ std::vector<string> tokenise(string userInput, string delimiter)
   } while (end > 0);
   cout << endl;
 
-<<<<<<< HEAD
-=======
-  cout << "Total tokens : " << tokens.size() << endl;
->>>>>>> 7a1a519b50ecc3119c17df053150a71c0c7c6ebf
   return tokens;
 }
 
@@ -106,6 +103,7 @@ void AdvisorBot::processUserInput(std::vector<string> inputCommand)
   {
     if (inputCommand[0].compare(knownCommands[0]) == 0 && inputCommand.size() == 1)
     {
+      cout << "-Help-" << endl;
       cout << "The available commands are, help, help [cmd], prod, min, max, avg, predict, time and step. " << endl;
     }
     // Checks if help command has additional arguements
@@ -118,51 +116,48 @@ void AdvisorBot::processUserInput(std::vector<string> inputCommand)
     }
     if (inputCommand[0].compare(knownCommands[1]) == 0)
     {
+      cout << "-Prod-" << endl;
       cout << "======Retreiving list of available currency for sale======" << endl;
       listAvailableCurrency();
     }
     // if condition for 'min' : first token is 'min' and only 3 tokens in command : 1:min 2:ETH/BTC 3:OrderBookType
     if (inputCommand[0].compare(knownCommands[2]) == 0 && inputCommand.size() == 3)
     {
+      cout << "-Min-" << endl;
       findMinPrice(inputCommand);
     }
     // if condition for 'max' : first token is 'max' and only 3 tokens in command : 1:max 2:ETH/BTC 3:OrderBookType
     if (inputCommand[0].compare(knownCommands[3]) == 0 && inputCommand.size() == 3)
     {
+      cout << "-Max-" << endl;
       findMaxPrice(inputCommand);
     }
     // if condition for 'avg' : first token is 'avg' and only 4 tokens in command : 1:avg 2:ETH/BTC 3:OrderBookType 4:NoOfTimesteps
     // User can only get avg of past timeframes that are available from the current timeframe in the dataset
     if (inputCommand[0].compare(knownCommands[4]) == 0 && inputCommand.size() == 4)
     {
-<<<<<<< HEAD
-      cout << "avg" << endl;
-      findAvgPrice(inputCommand, pastTimeFrames);
-    }
-    if (inputCommand[0].compare(knownCommands[5]) == 0)
-    {
-      cout << "predict" << endl;
-=======
+      cout << "-Avg-" << endl;
       findAvgPrice(inputCommand, pastTimeFrames);
     }
     if (inputCommand[0].compare(knownCommands[5]) == 0 && inputCommand.size() == 4)
     {
+      cout << "-Predict-" << endl;
       predictWeightedMovingAvg(inputCommand, pastTimeFrames);
->>>>>>> 7a1a519b50ecc3119c17df053150a71c0c7c6ebf
     }
     if (inputCommand[0].compare(knownCommands[6]) == 0)
     {
-      std::cout << "advisorbot> Current time in dataset is : " << currentTime << std::endl;
+      cout << "-Time-" << endl;
+      std::cout << "advisorbot> " << currentTime << std::endl;
     }
     if (inputCommand[0].compare(knownCommands[7]) == 0)
     {
+      cout << "-Step-" << endl;
       nextTimeStep();
     }
     if (inputCommand[0].compare(knownCommands[8]) == 0)
     {
-      // Workaround to using ctrl+c to end the program, as it takes it as a command.
-      cout << "advisorbot> Shutting down..." << endl;
-      std::exit(0);
+      cout << "-Current-" << endl;
+      getCurrentTrends(inputCommand);
     }
   }
   // Checks if userInput is left empty
@@ -240,10 +235,6 @@ void AdvisorBot::fetchHelpCmdParams(std::vector<string> &helpParams)
   if (helpParams[1].compare(knownCommands[7]) == 0)
   {
     helpCmds.getStepCmdSyntax();
-  }
-  if (helpParams[1].compare(knownCommands[8]) == 0)
-  {
-    helpCmds.getExitCmdSyntax();
   }
 }
 
@@ -342,13 +333,9 @@ void AdvisorBot::findAvgPrice(std::vector<string> &inputCommand, std::vector<str
     if (type == "ask")
     {
       for (int i = 0; i != noOfTimestep; ++i)
-<<<<<<< HEAD
       {
         entries = orderBook.getOrders(OrderBookType::ask, currency, recentTimeSteps[i]);
       }
-=======
-        entries = orderBook.getOrders(OrderBookType::ask, currency, recentTimeSteps[i]);
->>>>>>> 7a1a519b50ecc3119c17df053150a71c0c7c6ebf
     }
     if (type == "bid")
     {
@@ -364,16 +351,13 @@ void AdvisorBot::predictWeightedMovingAvg(std::vector<string> &inputCommand, std
   string minMax = inputCommand[1];
   string currency = inputCommand[2];
   string type = inputCommand[3];
-
   std::vector<OrderBookEntry> entries;
   std::vector<double> minMaxPrices;
-  cout << "a" << endl;
+
   if (validateUserInput(currency, productTypes) && ((type == "bid") || (type == "ask")))
   {
-    cout << "a" << endl;
     if (type == "ask")
     {
-      cout << "b" << endl;
       for (int i = 0; i != pastTimeFrames.size(); ++i)
       {
         entries = orderBook.getOrders(OrderBookType::ask, currency, pastTimeFrames[i]);
@@ -400,28 +384,78 @@ void AdvisorBot::predictWeightedMovingAvg(std::vector<string> &inputCommand, std
       }
     }
   }
-  for (int i = 0; i != minMaxPrices.size(); ++i)
-    cout << "PredictWeightedMovingAvg::" << minMax << " price of order at " << pastTimeFrames[i] << " is : " << minMaxPrices[i] << endl;
+  cout << "advisorbot> The average " << currency << " " << type << " price over the last " << pastTimeFrames.size()
+       << " timesteps was " << OrderBook::getWeightedMovingAvg(minMaxPrices) << endl;
+  cout << "advisorbot> The next " << type << " " << currency << " price might be "
+       << OrderBook::getWeightedMovingAvg(minMaxPrices) << endl;
+}
 
-  OrderBook::getWeightedMovingAvg(minMaxPrices);
-  // cout << " The average " << currency << " " << type << " price over the last " << pastTimeFrames.size()
-  //      << " timesteps was" << OrderBook::getWeightedMovingAvg(minMaxPrices) << endl;
+void AdvisorBot::getCurrentTrends(std::vector<std::string> &inputCommand)
+{
+  string minMax = inputCommand[1];
+  string type = inputCommand[2];
+  double price;
+  std::vector<OrderBookEntry> entries1, entriesTemp;
+  std::vector<std::vector<OrderBookEntry> > comparisonList;
+
+  if (((minMax == "min") || (minMax == "max")) && ((type == "bid") || (type == "ask")))
+  {
+    if (type == "bid")
+    {
+      entries1 = orderBook.getOrders(OrderBookType::bid, productTypes[0], currentTime);
+      cout << "getCurrentTrends::entry1.size() = " << entries1.size() << " and product is " << productTypes[0] << endl;
+      comparisonList.push_back(entries1);
+      for (int i = 0; i != productTypes.size() - 1; ++i)
+      {
+        entriesTemp = orderBook.getOrders(OrderBookType::bid, productTypes[i + 1], currentTime);
+        comparisonList.push_back(entriesTemp);
+        cout << "getCurrentTrends::entryTemp.size() = " << entriesTemp.size() << " and product is " << productTypes[i + 1] << endl;
+
+        if (comparisonList[0].size() > comparisonList[1].size())
+          comparisonList.erase(comparisonList.begin() + 1);
+        if (comparisonList[0].size() < comparisonList[1].size())
+          comparisonList.erase(comparisonList.begin());
+      }
+
+      if (minMax == "min")
+        price = OrderBook::getLowPrice(comparisonList[0]);
+      if (minMax == "max")
+        price = OrderBook::getHighPrice(comparisonList[0]);
+    }
+    if (type == "ask")
+    {
+      entries1 = orderBook.getOrders(OrderBookType::ask, productTypes[0], currentTime);
+      cout << "getCurrentTrends::entry1.size() = " << entries1.size() << " and product is " << productTypes[0] << endl;
+      comparisonList.push_back(entries1);
+      for (int i = 0; i != productTypes.size() - 1; ++i)
+      {
+        entriesTemp = orderBook.getOrders(OrderBookType::ask, productTypes[i + 1], currentTime);
+        comparisonList.push_back(entriesTemp);
+        cout << "getCurrentTrends::entryTemp.size() = " << entriesTemp.size() << " and product is " << productTypes[i + 1] << endl;
+
+        if (comparisonList[0].size() > comparisonList[1].size())
+          comparisonList.erase(comparisonList.begin() + 1);
+        if (comparisonList[0].size() < comparisonList[1].size())
+          comparisonList.erase(comparisonList.begin());
+      }
+
+      if (minMax == "min")
+        price = OrderBook::getLowPrice(comparisonList[0]);
+      if (minMax == "max")
+        price = OrderBook::getHighPrice(comparisonList[0]);
+    }
+
+    cout << "advisorbot> The current product with the most amount of " << type << "s at the current timestep of "
+         << currentTime << " is " << comparisonList[0][0].product << " with a " << minMax << " price of " << price << endl;
+  }
 }
 
 void AdvisorBot::nextTimeStep()
 {
-  cout << "Going to next timestep" << std::endl;
   pastTimeFrames.push_back(currentTime);
 
-  // Save past timesteps for use when using the avg command later.
-  std::cout << "Size of available timesteps to pull from: " << pastTimeFrames.size() << std::endl;
-<<<<<<< HEAD
-=======
-  for (string e : pastTimeFrames)
-    cout << e << endl;
->>>>>>> 7a1a519b50ecc3119c17df053150a71c0c7c6ebf
-
   currentTime = orderBook.getNextTime(currentTime);
+  cout << "advisorbot> now at " << currentTime << endl;
 }
 
 void AdvisorBot::notACommandError(std::vector<string> &inputCommand)

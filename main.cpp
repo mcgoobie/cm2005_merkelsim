@@ -10,7 +10,7 @@ int main()
 {
     // Create new instance of MerkelMain and launches it.
     // MerkelMain app{};
-    // Create new instance of MerkelMain and launches it.
+    // Create new instance of AdvisorBot and launches it.
     AdvisorBot app{};
     app.init();
 }

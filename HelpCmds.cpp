@@ -54,9 +54,3 @@ void HelpCmds::getStepCmdSyntax()
   std::cout << "Syntax : step" << std::endl;
   std::cout << "For e.g. step" << std::endl;
 }
-void HelpCmds::getExitCmdSyntax()
-{
-  std::cout << "Shuts down AdvisorBot" << std::endl;
-  std::cout << "Syntax : exit" << std::endl;
-  std::cout << "For e.g. exit" << std::endl;
-}
