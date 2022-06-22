@@ -15,6 +15,7 @@ void getAvgCmdSyntax();
 void getPredictCmdSyntax();
 void getTimeCmdSyntax();
 void getStepCmdSyntax();
+void getPopularCmdSyntax();
 
 private:
 };

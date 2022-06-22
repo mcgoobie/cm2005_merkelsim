@@ -3,7 +3,6 @@
 #include <vector>
 #include "OrderBookEntry.h"
 #include "OrderBook.h"
-#include "Wallet.h"
 #include "HelpCmds.h"
 
 class AdvisorBot
@@ -18,17 +17,27 @@ private:
   void processUserInput(std::vector<std::string> userInput);
   // Check if userInput matches any of the commands of advisorBot
   bool validateUserInput(std::string &userInput, std::vector<std::string> &arrayOfCmds);
+  bool validateUserInputType(std::string &inputType);
+  bool validateUserInputMinMax(std::string &inputMinMax);
+
   bool checkHelpArguements(std::vector<std::string> &inputCommand, std::vector<std::string> &arrayOfCmds);
   void fetchHelpCmdParams(std::vector<std::string> &helpParams);
+
   void saveAvailableCurrency();
   void listAvailableCurrency();
+
   void findMinPrice(std::vector<std::string> &inputCommand);
   void findMaxPrice(std::vector<std::string> &inputCommand);
+
   void findAvgPrice(std::vector<std::string> &inputCommand, std::vector<std::string> &pastTimeFrames);
   void predictWeightedMovingAvg(std::vector<std::string> &inputCommand, std::vector<std::string> &pastTimeFrames);
-  void getCurrentTrends(std::vector<std::string> &inputCommand);
+
+  void getPopularTrend(std::vector<std::string> &inputCommand);
+  std::vector<OrderBookEntry> compareProducts(std::vector<OrderBookEntry> entries1, std::vector<OrderBookEntry> entriesTemp, OrderBookType);
+
   void nextTimeStep();
   void notACommandError(std::vector<std::string> &inputCommand);
+  void invalidSyntaxError(std::vector<std::string> &inputCommand);
 
   std::vector<std::string> helpParams;
   std::vector<std::string> knownCommands;
@@ -36,6 +45,5 @@ private:
   std::string currentTime;
   std::vector<std::string> productTypes;
   std::vector<std::string> pastTimeFrames;
-  OrderBook orderBook{"test.csv"};
-  Wallet wallet;
+  OrderBook orderBook{"20200601.csv"};
 };

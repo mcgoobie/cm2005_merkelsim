@@ -54,3 +54,9 @@ void HelpCmds::getStepCmdSyntax()
   std::cout << "Syntax : step" << std::endl;
   std::cout << "For e.g. step" << std::endl;
 }
+void HelpCmds::getPopularCmdSyntax()
+{
+  std::cout << "Finds the most popular product with the most amount of bids/asks in the current timestep and the lowest/highest price" << std::endl;
+  std::cout << "Syntax : popular min/max orderBookType" << std::endl;
+  std::cout << "For e.g. popular max bid" << std::endl;
+}

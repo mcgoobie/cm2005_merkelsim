@@ -56,7 +56,7 @@ double OrderBook::getHighPrice(std::vector<OrderBookEntry> &orders)
   return max;
 };
 
-double OrderBook::getAvgPrice(std::vector<OrderBookEntry> &orders, std::string currentTime)
+double OrderBook::getAvgPrice(std::vector<OrderBookEntry> &orders)
 {
   double totalPrice;
   double avgPrice;
